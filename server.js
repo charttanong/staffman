@@ -6,20 +6,24 @@ require('dotenv').config();
 
 const app = express();
 
-const staffRoutes = require('./routes/staff');
-app.use('/api/staff', staffRoutes);
-
-app.use(express.static('public'));
-
-
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
+
+// Define a route for the root URL
+app.get('/', (req, res) => {
+    res.send('Welcome to the Staff Management App!');
+});
+
+// Import and use staff routes
+const staffRoutes = require('./routes/staff');
+app.use('/api/staff', staffRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5000;
